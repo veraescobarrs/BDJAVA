@@ -1,0 +1,102 @@
+Conectar una Base de datos MySQL con Java y Netbeans
+By Agustin Ramos  Mar 29, 2016 2
+En este articulo les voy a mostrar como conectar una base de datos MySql con el lenguaje de programación Java y el IDE Netbeans de la manera mas facil.
+
+Paso 1
+Primero necesitamos tener instalado en nuestra PC el Netbeans, java y MySQL por supuesto.
+
+Paso 2
+Descargar el MySQL Java Conector, descomprimirlo y ubicarlo en una carpeta de fácil acceso.
+
+Paso 3
+Ahora vamos al Netbeans y creamos un nuevo proyecto, le ponemos un nombre y seleccionamos para crear la clase principal por defecto.
+
+En mi caso el nombre de mi proyecto es mysql-con y la clase por defecto que se creo fue MysqlCon.java.
+
+Paso 4
+En el menu de la derecha del Netbeans buscamos en el arbol de proyectos, seleccionamos el proyecto actual y vamos a la carpeta de librerías, le damos click derecho y buscamos el MySQL Java Conector de donde lo guardamos en el paso 2, seleccionamos el archivo .jar.
+
+Paso 5
+Ahora vamos a escribir el código de nuestra función de conexión a la base de datos:
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+public static void connect(){
+String url = "jdbc:mysql://localhost:3306/myjavaapp1";
+String user = "root";
+String pass = "";
+System.out.println("Conectando...");
+try(Connection connection = DriverManager.getConnection(url, user,pass)){
+System.out.println("Conectado!!");
+ 
+}catch(SQLException e){
+System.out.println(e.getMessage());
+}
+}
+En tu caso debes modificar el valor de las variables url, user y password.
+
+La variable url equivale a la ubicacion del servidor de la base de datos, en este caso en localhost en el puerto 3306 y despues una diagonal separando el nombre de la base de datos.
+
+Paso 6
+Crear la base de datos.
+
+PAra ello debemos recurrir a una consola de comandos o algun gestor visual como MySQLWordBench o el mismisimo PHPMyAdmin.
+
+El codigo SQL de la base de datos en cuestión es el siguiente.
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+create database myjavaapp1;
+use myjavaapp1;
+ 
+create table user(
+id int not null auto_increment primary key,
+username varchar(125) unique,
+password varchar(125),
+created_at datetime
+);
+Paso 7
+Ahora que ya hemos cubierto los pasos necesarios vamos a ejecutar el proyecto.
+
+Por cierto recuerden agregar una llamada a la funcion connect() dentro de la funcion main() …
+
+ 
+
+mysql1
+
+Paso 8
+Despues de la linea donde mandamos a imprimir el texto “Conectado!” podemos usar el codigo siguiente para agregar un usuario:
+
+1
+2
+3
+4
+System.out.println("Insertando ...");
+Statement s = connection.createStatement();
+String query1 = "insert into user (username,password,created_at) value (\"user1\",\"mypassword\",NOW())";
+s.executeUpdate(query1);
+Y seguido de ese podemos usar el siguiente para mostrar o hacer un recorrido de todos los registros de la tabla user.
+
+1
+2
+3
+// vamos a recorrer
+String query2 = "select * from user";
+ResultSet r = s.executeQuery(query2);
